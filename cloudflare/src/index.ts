@@ -293,6 +293,7 @@ export class LobbyDO implements DurableObject {
         room.scores[sessionId] = Math.max(0, (room.scores[sessionId] || 0) - 1);
         await this.save();
         this.send(ws, { type: 'game:moveRejected', payload: { reason: 'wrong_value', game: gameSnapshot(room) } });
+        this.broadcast(room.code, { type: 'game:snapshot', payload: { game: gameSnapshot(room) } });
         return;
       }
 

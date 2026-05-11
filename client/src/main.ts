@@ -77,7 +77,7 @@ function renderBoard(game: GameSnapshot) {
       const selected = selectedCell?.row === r && selectedCell?.col === c;
       const related = selectedCell && (selectedCell.row === r || selectedCell.col === c || (Math.floor(selectedCell.row / 3) === Math.floor(r / 3) && Math.floor(selectedCell.col / 3) === Math.floor(c / 3)));
       cells.push(`
-        <button class="board-cell ${fixed ? 'fixed' : ''} ${selected ? 'selected' : ''} ${related ? 'related' : ''}" data-row="${r}" data-col="${c}">
+        <button class="board-cell ${fixed ? 'fixed' : ''} ${selected ? 'selected' : ''} ${related ? 'related' : ''} ${c % 3 === 2 ? 'block-right' : ''} ${r % 3 === 2 ? 'block-bottom' : ''}" data-row="${r}" data-col="${c}">
           ${value || ''}
         </button>
       `);
