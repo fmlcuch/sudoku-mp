@@ -5,6 +5,13 @@ export function createSocket(onMessage: (event: ServerEvent) => void) {
   const host = window.location.host;
   const url = import.meta.env.VITE_WS_URL || `${protocol}//${host}/ws`;
   const socket = new WebSocket(url);
+  const queue: ClientEvent[] = [];
+
+  socket.addEventListener('open', () => {
+    while (queue.length) {
+      socket.send(JSON.stringify(queue.shift()));
+    }
+  });
 
   socket.addEventListener('message', event => {
     try {
@@ -19,6 +26,8 @@ export function createSocket(onMessage: (event: ServerEvent) => void) {
     send(event: ClientEvent) {
       if (socket.readyState === WebSocket.OPEN) {
         socket.send(JSON.stringify(event));
+      } else {
+        queue.push(event);
       }
     },
   };

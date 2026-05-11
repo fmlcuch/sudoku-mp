@@ -1,32 +1,34 @@
 # Sudoku Multiplayer
 
-## Dev
+## Dev (Cloudflare)
 
 ```bash
 npm install
-npm run dev
+npx wrangler login
+npm run build:cf
+npm run dev:cf
 ```
 
-## Production / online
+## Online / free
 
-The repo now contains a single-server deployment path:
-- Fastify serves the built client from `client/dist`
-- WebSocket is on the same origin (`/ws`)
-- Vite dev server proxies `/ws` to the backend during development
+The current online path is:
+- frontend served by the Cloudflare Worker
+- WebSocket on the same origin (`/ws`)
+- Durable Object holds room/game state
 
-### Docker
+### Local test URLs
+- `http://127.0.0.1:8787/`
+- `http://127.0.0.1:8787/health`
+
+### Deploy
 
 ```bash
-docker build -t sudoku-multiplayer .
-docker run -p 3001:3001 sudoku-multiplayer
+npm run build:cf
+npm run deploy:cf
 ```
-
-Then open:
-- `http://localhost:3001/`
-- `http://localhost:3001/health`
 
 ## Stack
 - Vite + TypeScript
-- Fastify + WebSocket
-- PostgreSQL
-- Redis
+- Cloudflare Workers + Durable Objects
+- PostgreSQL (future persistence)
+- Redis (future persistence)

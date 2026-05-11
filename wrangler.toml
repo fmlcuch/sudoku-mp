@@ -1,0 +1,15 @@
+name = "sudoku-mp"
+main = "cloudflare/src/index.ts"
+compatibility_date = "2026-05-11"
+
+[assets]
+directory = "./client/dist"
+binding = "ASSETS"
+
+[[durable_objects.bindings]]
+name = "LOBBY"
+class_name = "LobbyDO"
+
+[[migrations]]
+tag = "v1"
+new_classes = ["LobbyDO"]
