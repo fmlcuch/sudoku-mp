@@ -1,6 +1,8 @@
 name = "sudoku-mp"
 main = "cloudflare/src/index.ts"
 compatibility_date = "2026-05-11"
+workers_dev = true
+preview_urls = false
 
 [assets]
 directory = "./client/dist"
@@ -12,4 +14,4 @@ class_name = "LobbyDO"
 
 [[migrations]]
 tag = "v1"
-new_classes = ["LobbyDO"]
+new_sqlite_classes = ["LobbyDO"]
