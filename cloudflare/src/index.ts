@@ -26,10 +26,10 @@ type RoomState = {
 type ClientEvent =
   | { type: 'room:create'; payload: { name: string; difficulty: Difficulty } }
   | { type: 'room:join'; payload: { name: string; code: string } }
-  | { type: 'room:leave' }
-  | { type: 'game:move'; payload: { row: number; col: number; value: number } }
-  | { type: 'game:ping' }
-  | { type: 'game:rematch' };
+  | { type: 'room:leave'; payload: { roomCode?: string } }
+  | { type: 'game:move'; payload: { roomCode?: string; row: number; col: number; value: number } }
+  | { type: 'game:ping'; payload?: { roomCode?: string } }
+  | { type: 'game:rematch'; payload?: { roomCode?: string } };
 
 type GameSnapshot = {
   roomCode: string;
@@ -243,8 +243,10 @@ export class LobbyDO implements DurableObject {
       return;
     }
 
-    const roomCode = attachment.roomCode;
-    const room = roomCode ? this.rooms.get(roomCode) : this.roomForSession(sessionId);
+    const roomCode = event.type === 'room:leave' || event.type === 'game:move' || event.type === 'game:rematch' || event.type === 'game:ping'
+      ? (event.payload?.roomCode || attachment.roomCode)
+      : attachment.roomCode;
+    const room = roomCode ? this.rooms.get(normalizeCode(roomCode)) : this.roomForSession(sessionId);
     if (!room) {
       this.send(ws, { type: 'room:error', payload: { message: 'not_in_room' } });
       return;
@@ -288,6 +290,7 @@ export class LobbyDO implements DurableObject {
       }
       if (room.solution[row][col] !== value) {
         room.mistakes[sessionId] = (room.mistakes[sessionId] || 0) + 1;
+        room.scores[sessionId] = Math.max(0, (room.scores[sessionId] || 0) - 1);
         await this.save();
         this.send(ws, { type: 'game:moveRejected', payload: { reason: 'wrong_value', game: gameSnapshot(room) } });
         return;

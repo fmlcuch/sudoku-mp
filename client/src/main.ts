@@ -52,7 +52,7 @@ function handleServerEvent(event: ServerEvent) {
 
   if (event.type === 'game:moveRejected') {
     state.game = event.payload.game;
-    state.status = event.payload.reason;
+    state.status = event.payload.reason === 'wrong_value' ? 'Špatný tah: -1 bod' : event.payload.reason;
   }
 
   if (event.type === 'game:finished') {
@@ -75,8 +75,9 @@ function renderBoard(game: GameSnapshot) {
       const value = game.board[r][c];
       const fixed = game.puzzle[r][c] !== 0;
       const selected = selectedCell?.row === r && selectedCell?.col === c;
+      const related = selectedCell && (selectedCell.row === r || selectedCell.col === c || (Math.floor(selectedCell.row / 3) === Math.floor(r / 3) && Math.floor(selectedCell.col / 3) === Math.floor(c / 3)));
       cells.push(`
-        <button class="board-cell ${fixed ? 'fixed' : ''} ${selected ? 'selected' : ''}" data-row="${r}" data-col="${c}">
+        <button class="board-cell ${fixed ? 'fixed' : ''} ${selected ? 'selected' : ''} ${related ? 'related' : ''}" data-row="${r}" data-col="${c}">
           ${value || ''}
         </button>
       `);
@@ -102,6 +103,7 @@ function renderScore(room: RoomSnapshot | null, game: GameSnapshot | null) {
         <div class="score-row">
           <span>${player.name}</span>
           <strong>${game.scores[player.sessionId] ?? 0}</strong>
+          <small>${game.mistakes[player.sessionId] ?? 0} chyb</small>
         </div>
       `).join('')}
     </div>
@@ -204,13 +206,13 @@ function render() {
   const rematchBtn = document.querySelector<HTMLButtonElement>('#rematch');
   if (rematchBtn) rematchBtn.onclick = () => {
     state.status = 'Požadavek na rematch...';
-    send({ type: 'game:rematch' });
+    send({ type: 'game:rematch', payload: { roomCode: state.room?.code } });
   };
 
   const leaveBtn = document.querySelectorAll<HTMLButtonElement>('#leave');
   leaveBtn.forEach(btn => {
     btn.onclick = () => {
-      send({ type: 'room:leave' });
+      send({ type: 'room:leave', payload: { roomCode: state.room?.code } });
       state.room = null;
       state.game = null;
       selectedCell = null;
@@ -230,7 +232,7 @@ function render() {
   document.querySelectorAll<HTMLButtonElement>('.digit').forEach(btn => {
     btn.onclick = () => {
       if (!selectedCell || !state.room) return;
-      send({ type: 'game:move', payload: { row: selectedCell.row, col: selectedCell.col, value: Number(btn.dataset.value) } });
+      send({ type: 'game:move', payload: { roomCode: state.room?.code, row: selectedCell.row, col: selectedCell.col, value: Number(btn.dataset.value) } });
     };
   });
 }

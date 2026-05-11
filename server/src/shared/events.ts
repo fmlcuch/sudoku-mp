@@ -3,10 +3,10 @@ import type { GameSnapshot, RoomSnapshot } from './types.js';
 export type ClientEvent =
   | { type: 'room:create'; payload: { name: string; difficulty: 'easy' | 'medium' | 'hard' } }
   | { type: 'room:join'; payload: { name: string; code: string } }
-  | { type: 'room:leave' }
-  | { type: 'game:move'; payload: { row: number; col: number; value: number } }
-  | { type: 'game:ping' }
-  | { type: 'game:rematch' };
+  | { type: 'room:leave'; payload: { roomCode?: string } }
+  | { type: 'game:move'; payload: { roomCode?: string; row: number; col: number; value: number } }
+  | { type: 'game:ping'; payload?: { roomCode?: string } }
+  | { type: 'game:rematch'; payload?: { roomCode?: string } };
 
 export type ServerEvent =
   | { type: 'room:state'; payload: { room: RoomSnapshot; selfId: string } }

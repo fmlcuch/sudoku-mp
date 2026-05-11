@@ -1,1 +1,10 @@
-/* Space for paperwhite refinements. */
+body {
+  background:
+    radial-gradient(circle at top, rgba(255,255,255,0.5), transparent 40%),
+    linear-gradient(180deg, #faf5e9, #f2e7d4);
+}
+
+.card,
+.masthead {
+  backdrop-filter: blur(4px);
+}
