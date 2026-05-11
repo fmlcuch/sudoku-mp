@@ -1,0 +1,136 @@
+:root {
+  color-scheme: light;
+  --paper: #f5efe1;
+  --paper-2: #fbf7ef;
+  --ink: #2a2218;
+  --muted: #675a47;
+  --line: #cbb99c;
+  --shadow: rgba(58, 42, 20, 0.12);
+  --accent: #7c5c2e;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: Georgia, 'Times New Roman', serif;
+  background: linear-gradient(180deg, #faf5e9, var(--paper));
+  color: var(--ink);
+}
+
+button, input, select {
+  font: inherit;
+}
+
+input, select, button {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 10px 12px;
+  background: var(--paper-2);
+  color: var(--ink);
+}
+
+button {
+  cursor: pointer;
+}
+
+.shell {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px;
+  display: grid;
+  gap: 16px;
+}
+
+.masthead,
+.card {
+  background: rgba(255, 251, 242, 0.82);
+  border: 1px solid rgba(141, 118, 87, 0.22);
+  box-shadow: 0 12px 30px var(--shadow);
+  border-radius: 20px;
+  padding: 18px;
+}
+
+.actions {
+  display: grid;
+  gap: 10px;
+}
+
+.game-layout {
+  display: grid;
+  gap: 16px;
+}
+
+.board-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+  gap: 1px;
+  background: rgba(141, 118, 87, 0.18);
+  border-radius: 8px;
+  padding: 2px;
+}
+
+.board-cell {
+  aspect-ratio: 1;
+  border-radius: 6px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+
+.board-cell.fixed {
+  background: #f8f3e8;
+}
+
+.board-cell.selected {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.scoreboard {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.score-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+h1, h2, p { margin-top: 0; }
+
+@media (min-width: 821px) {
+  .game-layout {
+    grid-template-columns: minmax(0, 1fr) 300px;
+    align-items: start;
+  }
+
+  .sidepanel {
+    position: sticky;
+    top: 12px;
+  }
+}
